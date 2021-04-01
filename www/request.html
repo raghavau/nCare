@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Complaint Request</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        .ico-width {
+            font-size: 48px !important;
+        }
+
+        .extra-background {
+            background-color: #f1f1f1 !important;
+        }
+
+        .extra-color-black {
+            color: black !important;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui stacked left aligned segment">
+                <div class="ui red ribbon label" id="lblHeading"></div><br>
+                <div class="ui form">
+                    <!-- <h4 class="ui dividing header">Service Request</h4> -->
+                    <div class="field">
+                        <label>Remarks</label>
+                        <div class="field">
+                            <textarea name="txtRemarks" id="txtRemarks" cols="30" rows="5" class="ui input"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field" id="nonmobile">
+                        <input type="file" name="fileUpload" id="fileUpload" onchange="readURL(event);">
+                    </div>
+
+                    <div class="field" id="mobile">
+                        <button id="btnSelectImage" class="ui blue fluid labeled icon button">
+                            <i class="images icon"></i>
+                            Select Image
+                        </button>
+                    </div>
+
+                    <div class="two fields">
+                        <div class="field">
+                            <button id="btnSave" class="ui positive fluid labeled icon button">
+                                <i class="check icon"></i>
+                                Save
+                            </button>
+                        </div>
+                        <div class="field">
+                            <button id="btnCancel" class="ui negative fluid labeled icon button" type="button">
+                                <i class="times icon"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <img src="" alt="" id="camera_image" class="ui medium centered image" height="200px"
+                            width="200px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hempid" />
+    <input type="hidden" id="hsid" />
+    <input type="hidden" id="hsname" />
+    <input type="hidden" id="hfname" />
+</body>
+
+</html>
+<script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    var deviceReady = false;
+    var qsParm = new Array();
+    var phoneGap = false;
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    function init() {
+        document.addEventListener("deviceready", function () {
+            deviceReady = true;
+        }, false);
+        window.setTimeout(function () {
+            if (!deviceReady) {
+                alert("Error: Camera not initialised.");
+            }
+        }, 2000);
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            $("#hsid").val(atob(qsParm["sid"]));
+            $("#hsname").val(atob(qsParm["sname"]));
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+                if (qsParm["fname"] != 'nofile') {
+                    $("#hfname").val(atob(qsParm["fname"]));
+                    var img = document.getElementById('camera_image');
+                    img.src = sessionStorage.getItem('imagepath');
+                }
+            }
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        $(".dimmer").hide();
+        qs();
+        $("#nonmobile").hide();
+        $("#mobile").hide();
+        $("#lblHeading").text($("#hsname").val() + ' Service Request');
+        
+        phoneGap = isPhoneGap();        
+        if (phoneGap) {
+            $("#nonmobile").hide();
+            $("#mobile").show();
+        } else {
+            $("#nonmobile").show();
+            $("#mobile").hide();
+        }
+        $('#btnSelectImage').click(function () {
+            onSelectClick();
+        });
+
+        $('#btnSave').click(function () {
+            SaveRequest();
+        });
+
+        $('#btnCancel').click(function () {
+            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+        });
+    });
+
+    function readURL(event) {
+        var img = document.getElementById('camera_image');
+        img.style.visibility = "visible";
+        img.style.display = "block";
+        img.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    function onSelectClick() {
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+            "&sname=" + btoa($("#hsname").val()));
+    }
+
+    function SaveRequest() {
+        //debugger;
+        if ($("#txtRemarks").val() == '') {
+            alert('Please Enter Remakrs.');
+            $("#txtRemarks").focus();
+            return false;
+        }
+
+        $(".dimmer").show();
+        var objdata = {
+            worktype: $("#hsid").val(),
+            userid: $("#hempid").val(),
+            complaint: $("#txtRemarks").val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'savecomplaint',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function (result) {
+                //debugger;
+                if (result.data != '') {
+                    uploadPicture(result.data);
+                } else {
+                    $(".dimmer").hide();
+                    alert('Your Service Request Failed to Submit.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+
+    function uploadPicture(cslno) {
+        //$(".dimmer").show();
+        var d = new Date();
+        var n = d.getTime();
+
+        if ($('#fileUpload').val() != '') {
+            var formdata = new FormData();
+            var file = $('#fileUpload')[0];
+            formdata.append('file', file.files[0]);
+
+            $.ajax({
+                url: apiURL + 'FileUpload/UploadFile/' + n + '/' + cslno,
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (d) {
+                    document.getElementById('camera_image').style.display = "none";
+                    $('#fileUpload').val('');
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                    $(".dimmer").hide();
+                }
+            });
+        } else if ($('#hfname').val() != '') {
+            $.ajax({
+                url: apiURL + 'FileUpload/UploadFile/mobile/' + $('#hfname').val() + '/' + cslno,
+                type: 'POST',
+                success: function (d) {
+                    document.getElementById('camera_image').style.display = "none";
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                    $(".dimmer").hide();
+                }
+            });
+        } else {
+            alert('Your Service Request Submitted Successfully');
+            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+        }
+    }
+</script>

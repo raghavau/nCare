@@ -31,8 +31,6 @@
 
         .divhide {
             width: 100%;
-            background-color: #eeeeee;
-            border-bottom: 1px solid #d4d4d4;
             display: none;
             position: fixed;
             z-index: 9999;
@@ -51,46 +49,12 @@
         .fieldleft {
             text-align: left !important;
         }
+
+        /* .ui.celled.table tr td {
+            border-bottom: none !important;
+        } */
     </style>
-    <script type="text/javascript">
-        $(function () {
-            var clickState = 1;
-            var ifrmheight = $('body').height() - $('.bottom').height();
-            $('#ifrm').css('top', $('.sticky').height() + 27);
-            $('#ifrm').height(ifrmheight - 49);
 
-            $('.ui.sticky').sticky();
-            $('.divhide').height($('.segment').height() + 30);
-            $('.uidimmer').height(ifrmheight + 100);
-
-            $('.rightalign').click(function () {
-                $(this).toggleClass('up');
-                $('.divhide').slideToggle('fast');
-                $('.uidimmer').toggle();
-                if (clickState == 1) {
-                    //$('.container').dimmer('show');
-                    $('.divhide').animate({
-                        height: $('.segment').height() + 30
-                    }, {
-                        //duration: 500,
-                        easing: "linear"
-                    });
-                    $('body').css('overflow', 'hidden');
-                    clickState = 0;
-                } else {
-                    //$('.container').dimmer('hide');
-                    $('.divhide').animate({
-                        height: '0px'
-                    }, {
-                        //duration: 500,
-                        easing: "linear"
-                    });
-                    $('body').css('overflow', 'auto');
-                    clickState = 1;
-                }
-            });
-        });
-    </script>
 </head>
 
 <body>
@@ -101,57 +65,74 @@
     <div class="divhide">
         <div class="ui center aligned segment">
             <div class="ui form">
-                <div class="fields">
-                    <!-- <div class="four wide field">
-                        <img src="" alt="" height="150px" width="130px">
-                    </div> -->
-                    <div class="sixteen wide field">
-                        <div class="field fieldleft">
-                            <label>Regno</label>
-                            <div class="ui transparent input">
-                                <input type="text" value="201201201234" readonly>
-                            </div>
-                        </div>
-                        <div class="field fieldleft">
-                            <label>Name</label>
-                            <div class="ui transparent input">
-                                <input type="text" value="V Sahhbvdnesb Tanalaoti" readonly>
-                            </div>
-                        </div>
-                        <div class="field fieldleft">
-                            <label>Department</label>
-                            <div class="ui transparent input">
-                                <input type="text" value="General Medicine" readonly>
-                            </div>
-                        </div>
-                        <div class="field fieldleft">
-                            <label>Doctor</label>
-                            <div class="ui transparent input">
-                                <input type="text" value="40800251 - Dr. Tester" readonly>
-                            </div>
-                        </div>
-                        <div class="field fieldleft">
-                            <label>Mobile</label>
-                            <div class="ui transparent input">
-                                <input type="text" value="9643518768" readonly>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <button class="ui labeled icon right floated red button">
-                                Logout
-                                <i class="power off icon"></i>
-                            </button>
-                        </div>
+                <div class="three fields">
+                    <div class="four wide field"></div>
+                    <div class="eight wide field">
+                        <table class="ui teal unstackable large celled table">
+                            <tbody>
+                                <tr>
+                                    <td class="two wide top aligned left aligned">
+                                        <label>Regno</label>
+                                    </td>
+                                    <td class="top aligned left aligned">
+                                        <label id="regno">201201201234</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide top aligned left aligned">
+                                        <label>Name</label>
+                                    </td>
+                                    <td class="top aligned left aligned">
+                                        <label id="name">T Sahhbvdnesb Tanalaoti</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide top aligned left aligned">
+                                        <label>Department</label>
+                                    </td>
+                                    <td class="top aligned left aligned">
+                                        <label id="dept">General Medicine</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide top aligned left aligned">
+                                        <label>Doctor</label>
+                                    </td>
+                                    <td class="top aligned left aligned">
+                                        <label id="doct">40800251 - Dr Tester</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide top aligned left aligned">
+                                        <label>Mobile</label>
+                                    </td>
+                                    <td class="top aligned left aligned">
+                                        <label id="mobile">9643518768</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide top aligned right aligned" colspan="2">
+                                        <button class="ui icon right floated tiny red button">
+                                            <i class="power off icon"></i>
+                                        </button>
+                                        <button class="ui icon right floated tiny green button">
+                                            <i class="bell icon"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <div class="four wide field"></div>
                 </div>
             </div>
         </div>
     </div>
     <iframe frameborder="0" width="100%" id="ifrm" seamless="" style="position: absolute" scrolling="auto"></iframe>
     <div class="ui bottom fixed four item labeled icon tiny menu">
-        <a class="item">
+        <a class="item" id="services">
             <i class="calendar plus red icon"></i>
-            Service Request
+            Services
         </a>
         <a class="item">
             <i class="tasks blue icon"></i>
@@ -170,3 +151,93 @@
 </body>
 
 </html>
+<script type="text/javascript" src="scripts/phonegap-1.1.0.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false);
+    }
+    var qsParm = new Array();
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+                $("#hsid").val(atob(qsParm["sid"]));
+                $("#hsname").val(atob(qsParm["sname"]));
+                $("#hfname").val(atob(qsParm["fname"]));
+            } else if (qsParm["ano"] != null || qsParm["ano"] != undefined) {
+                $("#hano").val(atob(qsParm["ano"]));
+            }
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+    $(function () {
+        var clickState = 1;
+        var ifrmheight = $('body').height() - $('.bottom').height();
+        $('#ifrm').css('top', $('.sticky').height() + 27);
+        $('#ifrm').height(ifrmheight - 49);
+
+        $('.ui.sticky').sticky();
+        $('.divhide').height($('.segment').height() + 30);
+        $('.uidimmer').height(ifrmheight + 100);
+
+        $('.rightalign').click(function () {
+            $(this).toggleClass('up');
+            $('.divhide').slideToggle('fast');
+            $('.uidimmer').toggle();
+            if (clickState == 1) {
+                //$('.container').dimmer('show');
+                $('.divhide').animate({
+                    height: $('.segment').height() + 30
+                }, {
+                    //duration: 500,
+                    easing: "linear"
+                });
+                $('body').css('overflow', 'hidden');
+                clickState = 0;
+            } else {
+                //$('.container').dimmer('hide');
+                $('.divhide').animate({
+                    height: '0px'
+                }, {
+                    //duration: 500,
+                    easing: "linear"
+                });
+                $('body').css('overflow', 'auto');
+                clickState = 1;
+            }
+        });
+
+        $('#services').click(function () {
+            $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
+        });
+    });
+</script>
