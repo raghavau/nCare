@@ -1,9 +1,234 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Index</title>
-    </head>
-    <body>
+
+<head>
+    <title>Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui.1.12.1.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #e5e5e5;
+            overflow: hidden;
+        }
         
-    </body>
+        body>.grid {
+            height: 100%;
+        }
+        
+        .column {
+            max-width: 400px;
+            /*margin: 20px;*/
+        }
+        
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+        
+        input#emppin {
+            -webkit-text-security: none;
+            -moz-text-security: none;
+            text-security: none;
+        }
+        
+        input#emppin {
+            -webkit-text-security: circle;
+            -moz-text-security: circle;
+            text-security: circle;
+        }
+        
+        input#emppin {
+            -webkit-text-security: square;
+            -moz-text-security: square;
+            text-security: square;
+        }
+        
+        input#emppin {
+            -webkit-text-security: disc;
+            -moz-text-security: disc;
+            text-security: disc;
+            /* Default */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui middle aligned center aligned grid">
+        <!-- ui raised very padded text container
+             ui middle aligned center aligned grid
+        -->
+        <div class="ui column grid">
+            <div class="column">
+                <div class="ui stacked left aligned segment">
+                    <!-- red -->
+                    <div class="ui red ribbon label">Login to Your Account</div><br><br>
+                    <center>
+                        <img src="img/logo.png" width="100" height="120"></center><br>
+                    <form class="ui form">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user circle icon"></i>
+                                <input name="empid" id="empid" placeholder="Employee Id" type="number" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input name="emppin" id="emppin" placeholder="PIN" type="password" maxlength="5">
+                            </div>
+                        </div>
+                        <button class="ui teal fluid submit button right labeled icon" type="button" id="login">
+                            <i class="checkmark icon"></i>
+                            <span>Login</span>
+                        </button>
+                        <div class="ui error message"></div>
+                    </form>
+                    <div class="ui section divider"></div>
+                    <button class="ui red fluid submit button right labeled icon" type="button" id="forgotpin">
+                        <i class="right arrow icon"></i>
+                        Forgot/Change PIN
+                    </button>
+                    <br>
+                    <center>
+                        <div id="version" class="ui tiny label"></div>
+                    </center>
+                    <!--<div class="two ui fluid buttons">
+                        <button class="ui positive submit button" id="register">Registration</button>
+                        <div class="or"></div>
+                        <button class="ui negative submit button" id="forgotpin">Forgot PIN?</button>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+</body>
+
 </html>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+
+    $(document).ready(function() {
+        CheckAppUpdate();
+        //$(".dimmer").hide();
+        $("#empid").focus();
+
+        $("#empid").keypress(function(e) {
+            //debugger;
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 9999999999) {
+                return false;
+            }
+        });
+
+        $("#emppin").keypress(function(e) {
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 99999) {
+                return false;
+            }
+        });
+
+        $('#login').click(function() {
+            //debugger;
+            var userData = {};
+            userData.OperatorCode = $("#empid").val();
+            userData.UniqueId = $("#emppin").val();
+
+            if ($("#empid").val() == "") {
+                alert('Please enter Employee Id');
+                $("#empid").focus();
+                return false;
+            } else if ($("#emppin").val() == "") {
+                alert('Please enter PIN');
+                $("#emppin").focus();
+                return false;
+            } else {
+                $(".dimmer").show();
+                $.post(apiURL + 'CheckPin', userData, function(response) {
+                    //debugger;
+                    if (response.data == 'Success')
+                        setTimeout(function() {
+                            window.location.href = 'layout.html?empid=' + btoa($("#empid").val());
+                        }, 3000);
+                    else {
+                        $(".dimmer").hide();
+                        alert('Invalid Employee Id/PIN. Please check.')
+                        $("#empid").val("");
+                        $("#emppin").val("");
+                        $("#empid").focus();
+                    }
+                }, 'json').fail(function(jqxhr, settings, ex) {
+                    $(".dimmer").hide();
+                    alert("error: " + ex);
+                });
+            }
+        });
+
+        $('#register').click(function() {
+            window.location.href = 'registration.html';
+        });
+
+        $('#forgotpin').click(function() {
+            window.location.href = 'layout.html';
+        });
+    });
+
+    function CheckAppUpdate() {
+        $(".dimmer").show();
+        $.get("./version.xml", function(data) {}).done(function(result) {
+            var version = $(result).find('content').attr('version');
+            $("#version").text("Version " + version);
+            $("#hvno").val(version);
+            $.get(apiURL + 'Notifications/App/4029038', {
+                version: $("#hvno").val()
+            }, function(response) {
+                //debugger;
+                var arrdata = response.data;
+                if (arrdata != version) {
+                    if (isPhoneGap())
+                        window.location.href = "download.html";
+                    else
+                        $(".dimmer").hide();
+                } else
+                    $(".dimmer").hide();
+            }).fail(function() {
+                $(".dimmer").hide();
+            });
+        }).fail(function(jqxhr, settings, ex) {
+            $("#hvno").val('0');
+            $(".dimmer").hide();
+        });
+    }
+</script>

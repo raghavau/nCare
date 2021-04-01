@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui.1.12.1.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <style type="text/css">
+        .stickybar {
+            background-color: #00b5ad;
+            padding: 1em;
+        }
+
+        .sticky {
+            background-color: #00b5ad;
+            padding: 1em;
+            position: fixed;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .rightalign {
+            float: right;
+            color: white;
+        }
+
+        .divhide {
+            width: 100%;
+            background-color: #eeeeee;
+            border-bottom: 1px solid #d4d4d4;
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50px !important;
+        }
+
+        .uidimmer {
+            background-color: #ffffffab !important;
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            display: none;
+            z-index: 999;
+        }
+
+        .fieldleft {
+            text-align: left !important;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            var clickState = 1;
+            var ifrmheight = $('body').height() - $('.bottom').height();
+            $('#ifrm').css('top', $('.sticky').height() + 27);
+            $('#ifrm').height(ifrmheight - 49);
+
+            $('.ui.sticky').sticky();
+            $('.divhide').height($('.segment').height() + 30);
+            $('.uidimmer').height(ifrmheight + 100);
+
+            $('.rightalign').click(function () {
+                $(this).toggleClass('up');
+                $('.divhide').slideToggle('fast');
+                $('.uidimmer').toggle();
+                if (clickState == 1) {
+                    //$('.container').dimmer('show');
+                    $('.divhide').animate({
+                        height: $('.segment').height() + 30
+                    }, {
+                        //duration: 500,
+                        easing: "linear"
+                    });
+                    $('body').css('overflow', 'hidden');
+                    clickState = 0;
+                } else {
+                    //$('.container').dimmer('hide');
+                    $('.divhide').animate({
+                        height: '0px'
+                    }, {
+                        //duration: 500,
+                        easing: "linear"
+                    });
+                    $('body').css('overflow', 'auto');
+                    clickState = 1;
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="sticky">
+        <span style="color: white; font-size: large; font-weight: bold;">nCare</span>
+        <i class="rightalign angle down large icon"></i>
+    </div>
+    <div class="divhide">
+        <div class="ui center aligned segment">
+            <div class="ui form">
+                <div class="fields">
+                    <!-- <div class="four wide field">
+                        <img src="" alt="" height="150px" width="130px">
+                    </div> -->
+                    <div class="sixteen wide field">
+                        <div class="field fieldleft">
+                            <label>Regno</label>
+                            <div class="ui transparent input">
+                                <input type="text" value="201201201234" readonly>
+                            </div>
+                        </div>
+                        <div class="field fieldleft">
+                            <label>Name</label>
+                            <div class="ui transparent input">
+                                <input type="text" value="V Sahhbvdnesb Tanalaoti" readonly>
+                            </div>
+                        </div>
+                        <div class="field fieldleft">
+                            <label>Department</label>
+                            <div class="ui transparent input">
+                                <input type="text" value="General Medicine" readonly>
+                            </div>
+                        </div>
+                        <div class="field fieldleft">
+                            <label>Doctor</label>
+                            <div class="ui transparent input">
+                                <input type="text" value="40800251 - Dr. Tester" readonly>
+                            </div>
+                        </div>
+                        <div class="field fieldleft">
+                            <label>Mobile</label>
+                            <div class="ui transparent input">
+                                <input type="text" value="9643518768" readonly>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <button class="ui labeled icon right floated red button">
+                                Logout
+                                <i class="power off icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe frameborder="0" width="100%" id="ifrm" seamless="" style="position: absolute" scrolling="auto"></iframe>
+    <div class="ui bottom fixed four item labeled icon tiny menu">
+        <a class="item">
+            <i class="calendar plus red icon"></i>
+            Service Request
+        </a>
+        <a class="item">
+            <i class="tasks blue icon"></i>
+            Service Status
+        </a>
+        <a class="item">
+            <i class="clipboard list green icon"></i>
+            Report
+        </a>
+        <a class="item">
+            <i class="bars gray icon"></i>
+            More
+        </a>
+    </div>
+    <div class="uidimmer"></div>
+</body>
+
+</html>

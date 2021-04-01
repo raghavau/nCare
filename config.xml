@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.phonegap.nnote" version="1.2.01" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>nNote</name>
+<widget id="com.phonegap.ncare" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>nCare</name>
     <description>
-        nNote
+        nCare
     </description>
     <author email="professionalcolleges.it@narayanagroup.com" href="http://nspira.in">
         Nspira IT Team
