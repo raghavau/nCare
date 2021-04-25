@@ -33,25 +33,25 @@
             margin: 0;
         }
         
-        input#emppin {
+        input#pin {
             -webkit-text-security: none;
             -moz-text-security: none;
             text-security: none;
         }
         
-        input#emppin {
+        input#pin {
             -webkit-text-security: circle;
             -moz-text-security: circle;
             text-security: circle;
         }
         
-        input#emppin {
+        input#pin {
             -webkit-text-security: square;
             -moz-text-security: square;
             text-security: square;
         }
         
-        input#emppin {
+        input#pin {
             -webkit-text-security: disc;
             -moz-text-security: disc;
             text-security: disc;
@@ -76,13 +76,13 @@
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="user circle icon"></i>
-                                <input name="empid" id="empid" placeholder="Employee Id" type="number" maxlength="10">
+                                <input name="regno" id="regno" placeholder="Registration No" type="number" maxlength="11">
                             </div>
                         </div>
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="lock icon"></i>
-                                <input name="emppin" id="emppin" placeholder="PIN" type="password" maxlength="5">
+                                <input name="pin" id="pin" placeholder="PIN" type="password" maxlength="6">
                             </div>
                         </div>
                         <button class="ui teal fluid submit button right labeled icon" type="button" id="login">
@@ -123,8 +123,8 @@
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/api/';
 
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
@@ -141,53 +141,53 @@
     $(document).ready(function() {
         CheckAppUpdate();
         //$(".dimmer").hide();
-        $("#empid").focus();
+        $("#regno").focus();
 
-        $("#empid").keypress(function(e) {
+        $("#regno").keypress(function(e) {
             //debugger;
             var current_val = $(this).val();
             var typing_char = String.fromCharCode(e.which);
-            if (parseFloat(current_val + "" + typing_char) > 9999999999) {
+            if (parseFloat(current_val + "" + typing_char) > 99999999999) {
                 return false;
             }
         });
 
-        $("#emppin").keypress(function(e) {
+        $("#pin").keypress(function(e) {
             var current_val = $(this).val();
             var typing_char = String.fromCharCode(e.which);
-            if (parseFloat(current_val + "" + typing_char) > 99999) {
+            if (parseFloat(current_val + "" + typing_char) > 999999) {
                 return false;
             }
         });
 
         $('#login').click(function() {
             //debugger;
-            var userData = {};
-            userData.OperatorCode = $("#empid").val();
-            userData.UniqueId = $("#emppin").val();
+            var patData = {};
+            patData.Regno = $("#regno").val();
+            patData.PIN = $("#pin").val();
 
-            if ($("#empid").val() == "") {
+            if ($("#regno").val() == "") {
                 alert('Please enter Employee Id');
-                $("#empid").focus();
+                $("#regno").focus();
                 return false;
-            } else if ($("#emppin").val() == "") {
+            } else if ($("#pin").val() == "") {
                 alert('Please enter PIN');
-                $("#emppin").focus();
+                $("#pin").focus();
                 return false;
             } else {
                 $(".dimmer").show();
-                $.post(apiURL + 'CheckPin', userData, function(response) {
+                $.post(apiURL + 'Patient/Validate', patData, function(response) {
                     //debugger;
                     if (response.data == 'Success')
                         setTimeout(function() {
-                            window.location.href = 'layout.html?empid=' + btoa($("#empid").val());
+                            window.location.href = 'layout.html?regno=' + btoa($("#regno").val());
                         }, 3000);
                     else {
                         $(".dimmer").hide();
                         alert('Invalid Employee Id/PIN. Please check.')
-                        $("#empid").val("");
-                        $("#emppin").val("");
-                        $("#empid").focus();
+                        $("#regno").val("");
+                        $("#pin").val("");
+                        $("#regno").focus();
                     }
                 }, 'json').fail(function(jqxhr, settings, ex) {
                     $(".dimmer").hide();

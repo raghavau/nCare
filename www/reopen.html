@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reopen Request</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui.1.12.1.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        .ico-width {
+            font-size: 48px !important;
+        }
+        
+        .extra-background {
+            background-color: #f1f1f1 !important;
+        }
+        
+        .extra-color-black {
+            color: black !important;
+        }
+        
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui left aligned segment">
+                <div class="ui red ribbon label">Reopen Request</div><br>
+                <div class="ui form">
+                    <div class="three fields">
+                        <div class="field">
+                            From Date
+                            <input type="text" id="fromDate" class="ui fluid input" />
+                        </div>
+                        <div class="field">
+                            To Date
+                            <input type="text" id="toDate" class="ui fluid input" />
+                        </div>
+                        <div class="field">
+                            Services
+                            <select id="services" class="ui dropdown"></select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="ui middle aligned relaxed divided list" id="list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hregno" />
+</body>
+
+</html>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    var apiURL = '../../NnoteApi/Api/Patient/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Patient/';
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    var qsParm = new Array();
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hregno").val(atob(qsParm["regno"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function() {
+        $(".dimmer").hide();
+        $('.ui.dropdown').dropdown();
+        $('#fromDate').attr("readonly", "true");
+        $('#toDate').attr("readonly", "true");
+
+        qs();
+        //Dates();
+        //ShowWorkTypes();
+        ShowRequests();
+        $('#services').change(function() {
+            ShowRequests();
+        });
+    });
+
+    function Dates() {
+        $("#fromDate").datepicker({
+            dateFormat: "dd-M-yy",
+            changeMonth: true,
+            gotoCurrent: true,
+            //minDate: '-6d',
+            minDate: new Date(2020, 9 - 1, 1),
+            maxDate: '+0d',
+            defaultDate: -7,
+            onClose: function(minDate) {
+                $("#toDate").datepicker("option", "minDate", minDate);
+            }
+        });
+
+        $("#toDate").datepicker({
+            dateFormat: "dd-M-yy",
+            changeMonth: true,
+            numberOfMonths: 1,
+            gotoCurrent: true,
+            minDate: new Date(2020, 9 - 1, 1), //minDate: new Date(1, 09, 2020),
+            maxDate: '+0d',
+            maxDate: new Date(),
+            onClose: function(selectedDate) {
+                $("#fromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $("#fromDate").datepicker().datepicker("setDate", new Date(2020, 9 - 1, 1));
+        $("#toDate").datepicker().datepicker("setDate", new Date());
+
+        $("#fromDate").on('change', function() {
+            ShowRequests();
+        });
+        $("#toDate").on('change', function() {
+            ShowRequests();
+        });
+    }
+
+    function ShowWorkTypes() {
+        //debugger;
+        $(".dimmer").show();
+        $('#services').empty();
+        $.get(apiURL + 'GetWorkTypes', function(response) {
+            //debugger;
+            var arrdata = response.data;
+            var content = '';
+            if (arrdata.length > 0) {
+                content = content + '<option value="all">All</option>';
+                for (j = 0; j < arrdata.length; j++) {
+                    content = content + '<option value="' + arrdata[j].code + '">' + arrdata[j].name_show +
+                        '</option>';
+                }
+                $(".dimmer").hide();
+                $('#services').append(content);
+                ShowRequests();
+            }
+        }).fail(function() {
+            $(".dimmer").hide();
+            alert('Failed to load WorkTypes. Please Check.');
+        });
+    }
+
+    function ShowRequests() {
+        $(".dimmer").show();
+        $('#list').empty();
+        $.get(apiURL + 'Resolved/' + $("#hregno").val(),
+            function(response) {
+                //debugger;
+                var arrdata = response.data;
+                var content = '';
+                if (arrdata.length > 0) {
+                    for (j = 0; j < arrdata.length; j++) {
+                        content = content + arrdata[j].strcontent;
+                    }
+                    $(".dimmer").hide();
+                    $('#list').append(content);
+                } else {
+                    $(".dimmer").hide();
+                }
+            }).fail(function() {
+            $(".dimmer").hide();
+            alert('Failed to load Resolved Requests. Please Check.');
+        });
+    }
+
+    function ChangeStatus(id) {
+        if ($("#txtRemarks" + id).val() == '') {
+            alert('Please Enter Remakrs.');
+            $("#txtRemarks" + id).focus();
+            return false;
+        }
+
+        $(".dimmer").show();
+        var objdata = {
+            complaintslno: $("#hcslno" + id).val(),
+            remarks: $("#txtRemarks" + id).val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'reopencomplaint',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function(result) {
+                //debugger;
+                if (result.data == 'Success') {
+                    alert('Your Request Reopned Successfully');
+                    document.location.href = "reopen.html?regno=" + btoa($("#hregno").val());
+                } else {
+                    $(".dimmer").hide();
+                    alert('Your Request Failed to Submit.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+
+    function ShowSlide(id) {
+        actionId = id;
+        $('.cslide').hide('slide up');
+        $('#slide' + id).toggle('slide down');
+        $('#txtRemarks' + id).val('');
+    }
+
+    function HideSlide(id) {
+        actionId = 0;
+        $('#slide' + id).hide('slide up');
+        $('#txtRemarks' + id).val('');
+    }
+</script>

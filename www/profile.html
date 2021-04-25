@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #e5e5e5;
+            /*overflow: hidden;*/
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!--<div class="ui middle aligned center aligned grid">-->
+    <!-- ui raised very padded text container
+             ui middle aligned center aligned grid
+        -->
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui stacked left aligned segment">
+                <div class="ui red ribbon label">Profile</div>
+                <table class="ui unstackable very basic large celled table">
+                    <tbody>
+                        <tr>
+                            <td align="right" class="two wide top aligned center aligned">
+                                <img src="" id="patimg" class="ui small rounded image">
+                            </td>
+                            <td class="top aligned left aligned">
+                                <div class="header">
+                                    <h3><label id="firstname"></label>
+                                        <div class="ui small label">
+                                            <label id="age"></label>
+                                            <div class="detail">
+                                                <label id="gender"></label>
+                                            </div>
+                                        </div>
+                                    </h3>
+                                    <div class="sub header">
+                                        <i class="birthday blue icon"></i><label id="dob"></label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    <!-- </tbody>
+                </table>
+                <div class="ui section divider"></div>
+                <table class="ui unstackable very basic large celled table">
+                    <tbody> -->
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="id card outline large blue icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="regno"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="checked calendar large violet icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="doa"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="edit large teal icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="ipid"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="user md large blue icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="doctor"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="mobile alternate big green icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="mobile"></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <!--</div>-->
+    <input type="hidden" id="hregno" />
+</body>
+
+</html>
+<script type="text/javascript">
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/api/';
+    var qsParm = new Array();
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hregno").val(atob(qsParm["regno"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        qs();
+        $(".dimmer").show();
+        var timeout = setTimeout(function Info() {
+            $.get(apiURL + 'Patient/AdmissionDetails/' + $("#hregno").val(), function (response) {
+                //debugger;
+                $("#regno").text(response.data[0].Regno);
+                $("#firstname").text(response.data[0].Name);
+                $("#age").text(response.data[0].Age + ' ' + response.data[0].AgeType);
+                $("#gender").text(response.data[0].Gender);
+                $("#dob").text(response.data[0].DOB);
+                $("#doa").text(response.data[0].AdmitDate);
+                $("#ipid").text(response.data[0].IPatientId);
+                $("#doctor").text(response.data[0].DoctorName + ' - ' + response.data[0].Department);
+                $("#mobile").text(response.data[0].MobileNo);
+                //$("#patimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
+                $("#patimg").attr('src',
+                    'http://115.241.194.19/NnoteApi/Handlers/ImageHandler.ashx?id=' + $(
+                        "#hregno").val());
+            }).done(function () {
+                //debugger;
+                $(".dimmer").hide();
+            })
+        }, 2000);
+    });
+</script>

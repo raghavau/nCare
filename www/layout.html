@@ -2,160 +2,89 @@
 <html>
 
 <head>
-    <title>Home</title>
+    <title>Index Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
     <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
-    <script type="text/javascript" src="scripts/jquery-ui.1.12.1.js"></script>
     <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
     <style type="text/css">
-        .stickybar {
-            background-color: #00b5ad;
-            padding: 1em;
+        body {
+            /*overflow: hidden;*/
         }
 
-        .sticky {
-            background-color: #00b5ad;
-            padding: 1em;
-            position: fixed;
-            width: 100%;
-            z-index: 9999;
+        body>.grid {
+            height: 100%;
         }
 
-        .rightalign {
-            float: right;
-            color: white;
+        .column {
+            max-width: 450px;
         }
-
-        .divhide {
-            width: 100%;
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            top: 50px !important;
-        }
-
-        .uidimmer {
-            background-color: #ffffffab !important;
-            width: 100%;
-            position: absolute;
-            top: 0px;
-            display: none;
-            z-index: 999;
-        }
-
-        .fieldleft {
-            text-align: left !important;
-        }
-
-        /* .ui.celled.table tr td {
-            border-bottom: none !important;
-        } */
     </style>
-
 </head>
 
 <body>
-    <div class="sticky">
-        <span style="color: white; font-size: large; font-weight: bold;">nCare</span>
-        <i class="rightalign angle down large icon"></i>
-    </div>
-    <div class="divhide">
-        <div class="ui center aligned segment">
-            <div class="ui form">
-                <div class="three fields">
-                    <div class="four wide field"></div>
-                    <div class="eight wide field">
-                        <table class="ui teal unstackable large celled table">
-                            <tbody>
-                                <tr>
-                                    <td class="two wide top aligned left aligned">
-                                        <label>Regno</label>
-                                    </td>
-                                    <td class="top aligned left aligned">
-                                        <label id="regno">201201201234</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two wide top aligned left aligned">
-                                        <label>Name</label>
-                                    </td>
-                                    <td class="top aligned left aligned">
-                                        <label id="name">T Sahhbvdnesb Tanalaoti</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two wide top aligned left aligned">
-                                        <label>Department</label>
-                                    </td>
-                                    <td class="top aligned left aligned">
-                                        <label id="dept">General Medicine</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two wide top aligned left aligned">
-                                        <label>Doctor</label>
-                                    </td>
-                                    <td class="top aligned left aligned">
-                                        <label id="doct">40800251 - Dr Tester</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two wide top aligned left aligned">
-                                        <label>Mobile</label>
-                                    </td>
-                                    <td class="top aligned left aligned">
-                                        <label id="mobile">9643518768</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two wide top aligned right aligned" colspan="2">
-                                        <button class="ui icon right floated tiny red button">
-                                            <i class="power off icon"></i>
-                                        </button>
-                                        <button class="ui icon right floated tiny green button">
-                                            <i class="bell icon"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="four wide field"></div>
-                </div>
-            </div>
+    <div class="ui top fixed fluid teal inverted labeled menu">
+        <a class="header item">
+            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span
+                style="font-size: 25px; font-weight: bold; color:white">nNote</span>
+        </a>
+        <div class="right icon menu">
+            <a class="item" id="download">
+                <span style="color: #ffffff;">
+                    <i class="download yellow icon"></i>
+                </span>
+            </a>
+            <a class="item" id="notifications">
+                <span style="color: #ffffff;">
+                    <i class="alarm icon"></i> <span id="ntfCount" class="ui mini red circular label"></span>
+                </span>
+            </a>
+            <a class="item" id="signout">
+                <span class="ico-width" style="color: #ffffff;">
+                    <i class="fas fa-power-off fa-1x"></i>
+                    <!-- <img class="ui tiny centered circular image" src="img/salad.svg" style="width: 50px !important;"> -->
+                </span>
+            </a>
         </div>
     </div>
     <iframe frameborder="0" width="100%" id="ifrm" seamless="" style="position: absolute" scrolling="auto"></iframe>
-    <div class="ui bottom fixed four item labeled icon tiny menu">
+    <div class="ui bottom fixed fluid five item labeled icon tiny menu" style="overflow: auto;">
+        <a class="item" id="profile">
+            <i class="id card teal icon"></i> Profile
+        </a>
         <a class="item" id="services">
-            <i class="calendar plus red icon"></i>
-            Services
+            <i class="calendar plus red icon"></i> Services
         </a>
-        <a class="item">
-            <i class="tasks blue icon"></i>
-            Service Status
+        <a class="item" id="status">
+            <i class="tasks blue icon"></i> Service Status
         </a>
-        <a class="item">
-            <i class="clipboard list green icon"></i>
-            Report
+        <a class="item" id="reopen">
+            <i class="clone brown icon"></i> ReOpen Request
         </a>
-        <a class="item">
-            <i class="bars gray icon"></i>
-            More
+        <a class="item" id="reports">
+            <i class="clipboard list green icon"></i> Reports
         </a>
     </div>
-    <div class="uidimmer"></div>
+    <input type="hidden" id="regno" />
+    <input type="hidden" id="hsid" />
+    <input type="hidden" id="hsname" />
+    <input type="hidden" id="hfname" />
+    <input type="hidden" id="hvno" />
+    <input type="hidden" id="hano" />
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
 </body>
 
 </html>
 <script type="text/javascript" src="scripts/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/api/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -179,7 +108,7 @@
             }
         }
         if (parms.length > 0) {
-            $("#hempid").val(atob(qsParm["empid"]));
+            $("#regno").val(atob(qsParm["regno"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
                 $("#hsid").val(atob(qsParm["sid"]));
                 $("#hsname").val(atob(qsParm["sname"]));
@@ -199,45 +128,108 @@
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
-    $(function () {
-        var clickState = 1;
+    var timeout = setInterval(function runMe() {
+        //debugger;
+        ShowAppUpdate();
+    }, 60000);
+
+    $(document).ready(function () {
+        qs();
+        $(".dimmer").hide();
+        $('#download').hide();
+        $.get("./version.xml", function (data) {}).done(function (result) {
+            var version = $(result).find('content').attr('version');
+            $("#hvno").val(version);
+        }).fail(function (jqxhr, settings, ex) {
+            alert('Failed: ' + ex);
+        });
+
         var ifrmheight = $('body').height() - $('.bottom').height();
-        $('#ifrm').css('top', $('.sticky').height() + 27);
-        $('#ifrm').height(ifrmheight - 49);
+        $('#ifrm').css('top', $('.top').height());
+        $('#ifrm').height(ifrmheight - 55);
 
-        $('.ui.sticky').sticky();
-        $('.divhide').height($('.segment').height() + 30);
-        $('.uidimmer').height(ifrmheight + 100);
+        if ($("#hfname").val() != "")
+            $('#ifrm').attr('src', 'request.html?regno=' + btoa($("#regno").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
+            + "&fname=" + btoa($("#hfname").val()));
+        else if ($("#hano").val() != "")
+            $('#ifrm').attr('src', 'AssetTrans.html?regno=' + btoa($("#regno").val()) + "&ano=" + btoa($("#hano").val()));
+        else
+            $('#ifrm').attr('src', 'profile.html?regno=' + btoa($("#regno").val()));
 
-        $('.rightalign').click(function () {
-            $(this).toggleClass('up');
-            $('.divhide').slideToggle('fast');
-            $('.uidimmer').toggle();
-            if (clickState == 1) {
-                //$('.container').dimmer('show');
-                $('.divhide').animate({
-                    height: $('.segment').height() + 30
-                }, {
-                    //duration: 500,
-                    easing: "linear"
-                });
-                $('body').css('overflow', 'hidden');
-                clickState = 0;
-            } else {
-                //$('.container').dimmer('hide');
-                $('.divhide').animate({
-                    height: '0px'
-                }, {
-                    //duration: 500,
-                    easing: "linear"
-                });
-                $('body').css('overflow', 'auto');
-                clickState = 1;
-            }
+        $("#ntfCount").text("");
+        $("#ntfCount").hide();
+
+        $('#notifications').click(function () {
+            //$('#ifrm').attr('src', 'notifications.html?regno=' + btoa($("#regno").val()));
+        });
+        $('#signout').click(function () {
+            $.get(apiURL + 'User/LogOut/' + $("#regno").val(), function (response) {
+                window.location.href = 'index.html';
+            }).fail(function () {
+                window.location.href = 'index.html';
+            });
         });
 
+        $('#profile').click(function () {
+            $('#ifrm').attr('src', 'profile.html?regno=' + btoa($("#regno").val()));
+        });
         $('#services').click(function () {
-            $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
+            $('#ifrm').attr('src', 'services.html?regno=' + btoa($("#regno").val()));
         });
+        $('#status').click(function () {
+            $('#ifrm').attr('src', 'editrequest.html?regno=' + btoa($("#regno").val()));
+        });
+        $('#reopen').click(function () {
+            $('#ifrm').attr('src', 'reopen.html?regno=' + btoa($("#regno").val()));
+        });
+        $('#reports').click(function () {
+            $('#ifrm').attr('src', 'complaintsList.html?regno=' + btoa($("#regno").val()));
+        });
+
+        //ShowNotifications();        
     });
+
+    function ShowNotifications() {
+        $.get(apiURL + 'Notifications/' + $("#regno").val(), function (response) {
+            //debugger;
+            var arrdata = response.data;
+            if (arrdata.length > 0) {
+                selectedArray = jQuery.grep(arrdata, function (data, i) {
+                    //debugger;
+                    return data.Status == 1;
+                });
+
+                if (selectedArray.length > 0) {
+                    $("#ntfCount").text(selectedArray.length);
+                    $("#ntfCount").show();
+                } else {
+                    $("#ntfCount").text("");
+                    $("#ntfCount").hide();
+                }
+            } else {
+                $("#ntfCount").text("");
+                $("#ntfCount").hide();
+            }
+        }).fail(function () {
+            setTimeout(ShowNotifications(), 3000);
+        });
+    }
+
+    function ShowAppUpdate() {
+        $('#download').hide();
+        $.get(apiURL + 'Notifications/App/4029038', function (response) {
+            //debugger;
+            var arrdata = response.data;
+            if (arrdata != $("#hvno").val()) {
+                if (isPhoneGap()) {
+                    $('#download').show();
+                    $('#download').click(function () {
+                        $(this).attr('href', 'http://115.241.194.19/nNote.apk');
+                    });
+                }
+            }
+        }).fail(function () {
+            //setTimeout(ShowAppUpdate(), 60000);
+        });
+    }
 </script>

@@ -85,7 +85,7 @@
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading</div>
     </div>
-    <input type="hidden" id="hempid" />
+    <input type="hidden" id="hregno" />
     <input type="hidden" id="hsid" />
     <input type="hidden" id="hsname" />
     <input type="hidden" id="hfname" />
@@ -143,7 +143,7 @@
             }
         }
         if (parms.length > 0) {
-            $("#hempid").val(atob(qsParm["empid"]));
+            $("#hregno").val(atob(qsParm["regno"]));
             $("#hsid").val(atob(qsParm["sid"]));
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
@@ -184,7 +184,7 @@
         });
 
         $('#btnCancel').click(function () {
-            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+            document.location.href = "services.html?regno=" + btoa($("#hregno").val());
         });
     });
 
@@ -196,7 +196,7 @@
     }
 
     function onSelectClick() {
-        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+        window.open('captureimage.html?regno=' + btoa($("#hregno").val()) + "&sid=" + btoa($("#hsid").val()) +
             "&sname=" + btoa($("#hsname").val()));
     }
 
@@ -211,7 +211,7 @@
         $(".dimmer").show();
         var objdata = {
             worktype: $("#hsid").val(),
-            userid: $("#hempid").val(),
+            userid: $("#hregno").val(),
             complaint: $("#txtRemarks").val()
         };
         $.ajax({
@@ -256,7 +256,7 @@
                     document.getElementById('camera_image').style.display = "none";
                     $('#fileUpload').val('');
                     alert('Your Service Request Submitted Successfully');
-                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                    document.location.href = "services.html?regno=" + btoa($("#hregno").val());
                 },
                 error: function (err) {
                     alert('Error in upload');
@@ -270,7 +270,7 @@
                 success: function (d) {
                     document.getElementById('camera_image').style.display = "none";
                     alert('Your Service Request Submitted Successfully');
-                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                    document.location.href = "services.html?regno=" + btoa($("#hregno").val());
                 },
                 error: function (err) {
                     alert('Error in upload');
@@ -279,7 +279,7 @@
             });
         } else {
             alert('Your Service Request Submitted Successfully');
-            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+            document.location.href = "services.html?regno=" + btoa($("#hregno").val());
         }
     }
 </script>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Complaint Request</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="scripts/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui.1.12.1.js"></script>
+    <script type="text/javascript" src="semantic/dist/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        .ico-width {
+            font-size: 48px !important;
+        }
+        
+        .extra-background {
+            background-color: #f1f1f1 !important;
+        }
+        
+        .extra-color-black {
+            color: black !important;
+        }
+        
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+        
+        .custom-handle {
+            width: 25px !important;
+            height: 25px !important;
+            top: -10px !important;
+            text-align: center !important;
+            padding: 3px !important;
+            background: #03A9F4 !important;
+            color: #ffffff !important;
+            font-weight: bold !important;
+            border: 1px solid #03A9F4 !important;
+        }
+        
+        .ui-widget-header {
+            background: #03A9F4 !important;
+        }
+        
+        .ui-corner-all {
+            border-radius: 18px !important;
+        }
+        
+        .ui-slider {
+            height: .4em !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui left aligned segment">
+                <div class="ui red ribbon label">Service Requests</div>
+                <div class="ui error message" style="display: none;">
+                    <p>No Data Available. Please check for another date</p>
+                </div>
+                <div class="ui middle aligned relaxed divided list" id="list">
+                    <!-- <div class="item">
+                        <div class="ui content">
+                            <label class="header" style="word-wrap: break-word;">Nursing</label>
+                            <div class="description">App testing for nursing services
+                                <br>05-SEP-20
+                            </div>
+                            <div class="extra">
+                                <div class="right floated content">
+                                    <div class="ui right floated small button" onclick="ShowSlide(4)">Action</div>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="ui secondary segment cslide" name="cslide" id="slide4"
+                                    style="display: none;">
+                                    <div class="ui form">
+                                        <div class="inline fields">
+                                            <div class="field">
+                                                <div class="ui radio checkbox" id="status4">
+                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
+                                                        value="Y">
+                                                    <label>Resolved</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox" id="status4">
+                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
+                                                        value="P">
+                                                    <label>Repost</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox" id="status4">
+                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
+                                                        value="C">
+                                                    <label>Not Feasible</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field" id="expDays4" style="display: none;">
+                                            Expected Days
+                                            <input type="hidden" id="txtExpDays4" value="1">
+                                            <div id="slider-range-min4">
+                                                <div id="custom-handle4" class="ui-slider-handle custom-handle"></div>
+                                            </div>
+                                        </div>
+                                        <div class="required field">
+                                            <label>Remarks</label>
+                                            <textarea id="txtRemarks4" class="ui input" placeholder="Enter Remarks"
+                                                cols="30" rows="3"></textarea>
+                                            <input type="hidden" id="hcslno4" value="11228" />
+                                        </div>
+                                        <div class="two fields">
+                                            <div class="field">
+                                                <button id="btnSave4" onclick="ChangeStatus(4)"
+                                                    class="ui positive fluid labeled icon button">
+                                                    <i class="check icon"></i>Save
+                                                </button>
+                                            </div>
+                                            <div class="field">
+                                                <button id="btnCancel4" class="ui negative fluid labeled icon button"
+                                                    type="button" onclick="HideSlide(4)">
+                                                    <i class="times icon"></i>Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <input type="hidden" id="hinId" value="0">
+            </div>
+        </div>
+    </div>
+
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hregno" />
+</body>
+
+</html>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    var qsParm = new Array();
+    var actionId = 0,
+        chkValue = null,
+        expDays = 1;
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hregno").val(atob(qsParm["regno"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function() {
+        $(".dimmer").hide();
+        $('.ui.checkbox').checkbox();
+
+        qs();
+        ShowRequests();
+    });
+
+    function ShowRequests() {
+        $(".dimmer").show();
+        $('#list').empty();
+        $.get(apiURL + 'getpendingrequests/' + $("#hregno").val(), function(response) {
+            //debugger;
+            var arrdata = response.data;
+            var content = '';
+            if (arrdata.length > 0) {
+                for (j = 0; j < arrdata.length; j++) {
+                    content = content + arrdata[j].strcontent;
+                }
+                $(".dimmer").hide();
+                $('#list').append(content);
+            } else {
+                $(".dimmer").hide();
+            }
+        }).fail(function() {
+            $(".dimmer").hide();
+            alert('Failed to load Service Requests. Please Check.');
+        });
+    }
+
+    function ChangeStatus(id) {
+        if ($("#txtRemarks" + id).val() == '') {
+            alert('Please Enter Remakrs.');
+            $("#txtRemarks" + id).focus();
+            return false;
+        }
+
+        $(".dimmer").show();
+        var objdata = {
+            cstatus: chkValue,
+            complaintslno: $("#hcslno" + id).val(),
+            expctdays: expDays,
+            remarks: $("#txtRemarks" + id).val(),
+            userid: $("#hregno").val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'updcomplainstatus',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function(result) {
+                //debugger;
+                if (result.data == 'Success') {
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "editrequest.html?regno=" + btoa($("#hregno").val());
+                } else {
+                    $(".dimmer").hide();
+                    alert('Your Service Request Failed to Submit.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+
+    function ShowSlide(id) {
+        actionId = id;
+        chkValue = null;
+        $('.cslide').hide('slide up');
+        $('#slide' + id).toggle('slide down');
+        $('.checkbox#status' + id).checkbox('uncheck');
+        //$('#txtRemarks' + id).focus();
+        $('#txtRemarks' + id).val('');
+        $('#expDays' + id).hide();
+
+        var handle = $("#custom-handle" + id);
+        $("#slider-range-min" + id).slider({
+            range: "min",
+            value: 1,
+            min: 1,
+            max: 10,
+            create: function() {
+                handle.text($(this).slider("value"));
+            },
+            slide: function(event, ui) {
+                handle.text(ui.value);
+                $("#txtExpDays" + id).val(ui.value);
+                expDays = $("#txtExpDays" + id).val();
+            }
+        });
+        $("#txtExpDays" + id).val($("#slider-range-min" + id).slider("value"));
+
+        $(document).on('click', '.ui.radio.checkbox#status' + id, function() {
+            $('.ui.radio.checkbox#status' + id).each(function() {
+                //debugger;
+                var boolval = $(this)[0].firstElementChild.checked;
+                var inputval = $(this)[0].firstElementChild.value;
+                if (boolval) {
+                    chkValue = inputval;
+                    if (chkValue == 'P')
+                        $('#expDays' + id).show();
+                    else
+                        $('#expDays' + id).hide();
+                }
+            });
+        });
+    }
+
+    function HideSlide(id) {
+        actionId = 0;
+        chkValue = null;
+        $('#slide' + id).hide('slide up');
+        $('.checkbox#status' + id).checkbox('uncheck');
+        $('#txtRemarks' + id).val('');
+    }
+</script>
