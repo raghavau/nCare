@@ -102,7 +102,7 @@
         //debugger;
         $(".dimmer").show();
         $('#wtcards').empty();
-        $.get(apiURL + 'GetWorkTypes', function(response) {
+        $.get(apiURL + 'GetPatientWorkTypes', function(response) {
             //debugger;
             var arrdata = response.data;
             var content = '<br><br>';

@@ -29,7 +29,7 @@
     <div class="ui top fixed fluid teal inverted labeled menu">
         <a class="header item">
             <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span
-                style="font-size: 25px; font-weight: bold; color:white">nNote</span>
+                style="font-size: 25px; font-weight: bold; color:white">nCare</span>
         </a>
         <div class="right icon menu">
             <a class="item" id="download">
@@ -83,8 +83,8 @@
 <script type="text/javascript" src="scripts/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NnoteApi/api/';
-    //var apiURL = 'http://115.241.194.19/NnoteApi/api/';
+    //var apiURL = '../../NnoteApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/api/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -128,10 +128,12 @@
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
+    /*
     var timeout = setInterval(function runMe() {
         //debugger;
         ShowAppUpdate();
     }, 60000);
+    */
 
     $(document).ready(function () {
         qs();
@@ -183,7 +185,7 @@
             $('#ifrm').attr('src', 'reopen.html?regno=' + btoa($("#regno").val()));
         });
         $('#reports').click(function () {
-            $('#ifrm').attr('src', 'complaintsList.html?regno=' + btoa($("#regno").val()));
+            $('#ifrm').attr('src', 'labreports.html?regno=' + btoa($("#regno").val()));
         });
 
         //ShowNotifications();        

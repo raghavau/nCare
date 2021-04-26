@@ -64,7 +64,7 @@
     <div class="ui column grid">
         <div class="column">
             <div class="ui left aligned segment">
-                <div class="ui red ribbon label">Service Requests</div>
+                <div class="ui red ribbon label">Service Requests</div><BR>
                 <div class="ui error message" style="display: none;">
                     <p>No Data Available. Please check for another date</p>
                 </div>
@@ -160,7 +160,7 @@
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = '../../NnoteApi/Api/Patient/';
     //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
     function onBackKeyDown() {
@@ -206,7 +206,7 @@
     function ShowRequests() {
         $(".dimmer").show();
         $('#list').empty();
-        $.get(apiURL + 'getpendingrequests/' + $("#hregno").val(), function(response) {
+        $.get(apiURL + 'Requests/' + $("#hregno").val(), function(response) {
             //debugger;
             var arrdata = response.data;
             var content = '';
@@ -223,94 +223,5 @@
             $(".dimmer").hide();
             alert('Failed to load Service Requests. Please Check.');
         });
-    }
-
-    function ChangeStatus(id) {
-        if ($("#txtRemarks" + id).val() == '') {
-            alert('Please Enter Remakrs.');
-            $("#txtRemarks" + id).focus();
-            return false;
-        }
-
-        $(".dimmer").show();
-        var objdata = {
-            cstatus: chkValue,
-            complaintslno: $("#hcslno" + id).val(),
-            expctdays: expDays,
-            remarks: $("#txtRemarks" + id).val(),
-            userid: $("#hregno").val()
-        };
-        $.ajax({
-            type: 'POST',
-            url: apiURL + 'updcomplainstatus',
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(objdata),
-            success: function(result) {
-                //debugger;
-                if (result.data == 'Success') {
-                    alert('Your Service Request Submitted Successfully');
-                    document.location.href = "editrequest.html?regno=" + btoa($("#hregno").val());
-                } else {
-                    $(".dimmer").hide();
-                    alert('Your Service Request Failed to Submit.');
-                }
-            },
-            error: function(xhr, status, error) {
-                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
-                $(".dimmer").hide();
-            }
-        });
-    }
-
-    function ShowSlide(id) {
-        actionId = id;
-        chkValue = null;
-        $('.cslide').hide('slide up');
-        $('#slide' + id).toggle('slide down');
-        $('.checkbox#status' + id).checkbox('uncheck');
-        //$('#txtRemarks' + id).focus();
-        $('#txtRemarks' + id).val('');
-        $('#expDays' + id).hide();
-
-        var handle = $("#custom-handle" + id);
-        $("#slider-range-min" + id).slider({
-            range: "min",
-            value: 1,
-            min: 1,
-            max: 10,
-            create: function() {
-                handle.text($(this).slider("value"));
-            },
-            slide: function(event, ui) {
-                handle.text(ui.value);
-                $("#txtExpDays" + id).val(ui.value);
-                expDays = $("#txtExpDays" + id).val();
-            }
-        });
-        $("#txtExpDays" + id).val($("#slider-range-min" + id).slider("value"));
-
-        $(document).on('click', '.ui.radio.checkbox#status' + id, function() {
-            $('.ui.radio.checkbox#status' + id).each(function() {
-                //debugger;
-                var boolval = $(this)[0].firstElementChild.checked;
-                var inputval = $(this)[0].firstElementChild.value;
-                if (boolval) {
-                    chkValue = inputval;
-                    if (chkValue == 'P')
-                        $('#expDays' + id).show();
-                    else
-                        $('#expDays' + id).hide();
-                }
-            });
-        });
-    }
-
-    function HideSlide(id) {
-        actionId = 0;
-        chkValue = null;
-        $('#slide' + id).hide('slide up');
-        $('.checkbox#status' + id).checkbox('uncheck');
-        $('#txtRemarks' + id).val('');
     }
 </script>

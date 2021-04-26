@@ -33,25 +33,25 @@
             margin: 0;
         }
 
-        input#pin {
+        input#pin,#cnfpin {
             -webkit-text-security: none;
             -moz-text-security: none;
             text-security: none;
         }
 
-        input#pin {
+        input#pin,#cnfpin {
             -webkit-text-security: circle;
             -moz-text-security: circle;
             text-security: circle;
         }
 
-        input#pin {
+        input#pin,#cnfpin {
             -webkit-text-security: square;
             -moz-text-security: square;
             text-security: square;
         }
 
-        input#pin {
+        input#pin,#cnfpin {
             -webkit-text-security: disc;
             -moz-text-security: disc;
             text-security: disc;
@@ -69,9 +69,7 @@
             <div class="column">
                 <div class="ui stacked left aligned segment">
                     <!-- red -->
-                    <div class="ui red ribbon label">Login to Your Account</div><br><br>
-                    <center>
-                        <img src="img/logo.png" width="100" height="120"></center><br>
+                    <div class="ui red ribbon label">Change PIN</div><br><br>
                     <form class="ui form">
                         <div class="field">
                             <div class="ui left icon input">
@@ -83,24 +81,25 @@
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="lock icon"></i>
-                                <input name="pin" id="pin" placeholder="PIN" type="password" maxlength="6">
+                                <input name="pin" id="pin" placeholder="New PIN" type="password" maxlength="6">
                             </div>
                         </div>
-                        <button class="ui teal fluid submit button right labeled icon" type="button" id="login">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input name="pin" id="cnfpin" placeholder="Confirm PIN" type="password" maxlength="6">
+                            </div>
+                        </div>
+                        <button class="ui teal fluid submit button right labeled icon" type="button" id="change">
                             <i class="checkmark icon"></i>
-                            <span>Login</span>
+                            <span>Change</span>
+                        </button><br>
+                        <button class="ui red fluid submit button right labeled icon" type="button" id="cancel">
+                            <i class="close icon"></i>
+                            <span>Cancel</span>
                         </button>
                         <div class="ui error message"></div>
                     </form>
-                    <div class="ui section divider"></div>
-                    <button class="ui red fluid submit button right labeled icon" type="button" id="forgotpin">
-                        <i class="right arrow icon"></i>
-                        Forgot/Change PIN
-                    </button>
-                    <br>
-                    <center>
-                        <div id="version" class="ui tiny label"></div>
-                    </center>
                 </div>
             </div>
         </div>
@@ -135,7 +134,6 @@
     }
 
     $(document).ready(function () {
-        //CheckAppUpdate();
         $(".dimmer").hide();
         $("#regno").focus();
 
@@ -156,7 +154,15 @@
             }
         });
 
-        $('#login').click(function () {
+        $("#cnfpin").keypress(function (e) {
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 999999) {
+                return false;
+            }
+        });
+
+        $('#change').click(function () {
             //debugger;
             $.get(apiURL + 'Patient/IsInPatient/' + $("#regno").val(), function (response) {
                 //debugger;
@@ -164,6 +170,7 @@
                     var patData = {};
                     patData.Regno = $("#regno").val();
                     patData.PIN = $("#pin").val();
+                    patData.ConfirmPIN = $("#cnfpin").val();
 
                     if ($("#regno").val() == "") {
                         alert('Please enter Employee Id');
@@ -173,21 +180,28 @@
                         alert('Please enter PIN');
                         $("#pin").focus();
                         return false;
+                    } else if ($("#cnfpin").val() == "") {
+                        alert('Please enter Confirm PIN');
+                        $("#cnfpin").focus();
+                        return false;
+                    } else if ($("#cnfpin").val() != $("#pin").val()) {
+                        alert('New PIN and Confirm PIN should be equal');
+                        $("#pin").focus();
+                        return false;
                     } else {
                         $(".dimmer").show();
-                        $.post(apiURL + 'Patient/Validate', patData, function (response) {
+                        $.post(apiURL + 'Patient/ChangePin', patData, function (response) {
                             //debugger;
                             if (response.data == 'Success')
                                 setTimeout(function () {
-                                    window.location.href = 'layout.html?regno=' +
-                                        btoa($(
-                                            "#regno").val());
+                                    window.location.href = 'index.html';
                                 }, 3000);
                             else {
                                 $(".dimmer").hide();
-                                alert('Invalid Registration No/PIN. Please check.')
+                                alert('New PIN and Confirm PIN should be equal. Please check.')
                                 $("#regno").val("");
                                 $("#pin").val("");
+                                $("#cnfpin").val("");
                                 $("#regno").focus();
                             }
                         }, 'json').fail(function (jqxhr, settings, ex) {
@@ -195,44 +209,17 @@
                             alert("error: " + ex);
                         });
                     }
-                }
-                else {
+                } else {
                     alert("Not an Inpatient or Patient was Discharged.");
                 }
-            }).fail(function () {
-                Status = false;
+            }).fail(function (jqxhr, settings, ex) {
+                $(".dimmer").hide();
+                alert("error: " + ex);
             });
         });
 
-        $('#forgotpin').click(function () {
-            window.location.href = 'changepin.html';
+        $('#cancel').click(function () {
+            window.location.href = 'index.html';
         });
     });
-
-    function CheckAppUpdate() {
-        $(".dimmer").show();
-        $.get("./version.xml", function (data) {}).done(function (result) {
-            var version = $(result).find('content').attr('version');
-            $("#version").text("Version " + version);
-            $("#hvno").val(version);
-            $.get(apiURL + 'Notifications/App/4029038', {
-                version: $("#hvno").val()
-            }, function (response) {
-                //debugger;
-                var arrdata = response.data;
-                if (arrdata != version) {
-                    if (isPhoneGap())
-                        window.location.href = "download.html";
-                    else
-                        $(".dimmer").hide();
-                } else
-                    $(".dimmer").hide();
-            }).fail(function () {
-                $(".dimmer").hide();
-            });
-        }).fail(function (jqxhr, settings, ex) {
-            $("#hvno").val('0');
-            $(".dimmer").hide();
-        });
-    }
 </script>
