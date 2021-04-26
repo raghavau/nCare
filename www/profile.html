@@ -123,8 +123,8 @@
 
 </html>
 <script type="text/javascript">
-    //var apiURL = '../../NnoteApi/api/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/api/';
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/api/';
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -172,7 +172,7 @@
                 $("#doctor").text(response.data[0].DoctorName + ' - ' + response.data[0].Department);
                 $("#mobile").text(response.data[0].MobileNo);
                 //$("#patimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-                $("#patimg").attr('src', 'http://narayanagroup.co.in/NnoteApi/Handlers/ImageHandler.ashx?id=' + $("#hregno").val());
+                $("#patimg").attr('src', 'http://115.241.194.19/NnoteApi/Handlers/ImageHandler.ashx?id=' + $("#hregno").val());
             }).done(function () {
                 //debugger;
                 $(".dimmer").hide();
