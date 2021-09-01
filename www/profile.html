@@ -95,6 +95,14 @@
                         </tr>
                         <tr>
                             <td class="two wide top aligned center aligned">
+                                <i class="bed large blue icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="bed"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
                                 <i class="user md large blue icon"></i>
                             </td>
                             <td class="top aligned left aligned">
@@ -169,10 +177,12 @@
                 $("#dob").text(response.data[0].DOB);
                 $("#doa").text(response.data[0].AdmitDate);
                 $("#ipid").text(response.data[0].IPatientId);
+                $("#bed").text(response.data[0].BedId + ' - ' + response.data[0].WardName);
                 $("#doctor").text(response.data[0].DoctorName + ' - ' + response.data[0].Department);
                 $("#mobile").text(response.data[0].MobileNo);
                 //$("#patimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-                $("#patimg").attr('src', 'http://115.241.194.19/NnoteApi/Handlers/ImageHandler.ashx?id=' + $("#hregno").val());
+                $("#patimg").attr('src', '../../NnoteApi/Handlers/ImageHandler.ashx?id=' + $("#hregno").val());
+                //$("#patimg").attr('src', 'http://115.241.194.19/NnoteApi/Handlers/ImageHandler.ashx?id=' + $("#hregno").val());
             }).done(function () {
                 //debugger;
                 $(".dimmer").hide();
